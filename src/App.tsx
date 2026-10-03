@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Preloader } from './components/Preloader.tsx';
 import { HeaderNav } from './components/HeaderNav.tsx';
 import { HeroSection } from './components/HeroSection.tsx';
@@ -22,11 +22,12 @@ import { Footer } from './components/Footer.tsx';
 
 export default function App() {
   const [preloaderDone, setPreloaderDone] = useState(false);
+  const handlePreloaderComplete = useCallback(() => setPreloaderDone(true), []);
 
   return (
     <div className="relative min-h-screen bg-[#F4F3EE] text-[#1B211F] selection:bg-[#21403D] selection:text-[#FBFAF6]">
       {/* Precision 'METRICS' Preloader */}
-      <Preloader onComplete={() => setPreloaderDone(true)} />
+      <Preloader onComplete={handlePreloaderComplete} />
 
       {/* Top Header Navigation (Compact top-left anchor + unified tablet/mobile right panel) */}
       <HeaderNav />

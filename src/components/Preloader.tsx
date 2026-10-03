@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface PreloaderProps {
   onComplete: () => void;
@@ -6,13 +6,27 @@ interface PreloaderProps {
 
 export function Preloader({ onComplete }: PreloaderProps) {
   const [phase, setPhase] = useState<'initial' | 'aligning' | 'aligned' | 'subtitle' | 'exit' | 'done'>('initial');
+  const onCompleteRef = useRef(onComplete);
+  const hasCompletedRef = useRef(false);
 
   useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
+
+  useEffect(() => {
+    if (hasCompletedRef.current) return;
+
+    const complete = () => {
+      if (hasCompletedRef.current) return;
+      hasCompletedRef.current = true;
+      setPhase('done');
+      onCompleteRef.current();
+    };
+
     // Check if user prefers reduced motion
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) {
-      setPhase('done');
-      onComplete();
+      complete();
       return;
     }
 
@@ -26,10 +40,7 @@ export function Preloader({ onComplete }: PreloaderProps) {
     // Phase 4: measurement system slides toward top-left
     const t4 = setTimeout(() => setPhase('exit'), 2400);
     // Phase 5: finish preloader
-    const t5 = setTimeout(() => {
-      setPhase('done');
-      onComplete();
-    }, 3100);
+    const t5 = setTimeout(complete, 3100);
 
     return () => {
       clearTimeout(t1);
@@ -38,7 +49,7 @@ export function Preloader({ onComplete }: PreloaderProps) {
       clearTimeout(t4);
       clearTimeout(t5);
     };
-  }, [onComplete]);
+  }, []);
 
   if (phase === 'done') return null;
 
@@ -61,7 +72,7 @@ export function Preloader({ onComplete }: PreloaderProps) {
             <div
               className="h-[2px] bg-[#1B211F] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
               style={{
-                width: phase === 'initial' ? '28px' : '48px', // expands
+                width: phase === 'initial' ? '28px' : phase === 'aligning' ? '40px' : '48px',
               }}
             />
             <span className="font-mono text-[11px] text-[#4A514E] tracking-widest tabular-nums">01</span>
@@ -72,7 +83,7 @@ export function Preloader({ onComplete }: PreloaderProps) {
             <div
               className="h-[2px] bg-[#1B211F] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
               style={{
-                width: phase === 'initial' ? '68px' : '48px', // contracts
+                width: phase === 'initial' ? '68px' : phase === 'aligning' ? '56px' : '48px',
               }}
             />
             <span className="font-mono text-[11px] text-[#4A514E] tracking-widest tabular-nums">02</span>
@@ -83,7 +94,7 @@ export function Preloader({ onComplete }: PreloaderProps) {
             <div
               className="h-[2px] bg-[#1B211F] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
               style={{
-                width: '48px', // remains fixed
+                width: '48px',
               }}
             />
             <span className="font-mono text-[11px] text-[#4A514E] tracking-widest tabular-nums">03</span>
