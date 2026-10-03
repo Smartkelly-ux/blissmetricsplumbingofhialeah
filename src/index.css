@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --canvas: #F4F3EE;
+    --soft-white: #FBFAF6;
+    --ink: #1B211F;
+    --graphite: #4A514E;
+    --fog: #D9DEDA;
+    --deep-teal: #21403D;
+    --warm-mineral: #B78C72;
+    --muted: #929792;
+  }
+
+  body {
+    font-family: 'Geist', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--canvas);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  code, kbd, samp, pre, .font-mono {
+    font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+
+  button, a {
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  button:hover, a:hover {
+    transform: scale(1.02);
+  }
+
+  button:active, a:active {
+    transform: scale(0.99);
+  }
+}
+
+/* Reduced motion respect */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F4F3EE;
+}
+::-webkit-scrollbar-thumb {
+  background: #D9DEDA;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #B78C72;
+}
